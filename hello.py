@@ -9,5 +9,5 @@ entrypoint = "/"
 @app.route('/')
 def entrypoint():
     global linked_data
-    print(request.path)
+    path = request.path
     return (str(linked_data["@context"]))
