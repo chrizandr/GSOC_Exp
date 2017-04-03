@@ -8,11 +8,11 @@ from json_response import *
 
 app = Flask(__name__)
 
-@app.route('/demo-api/', methods=["GET"])
+@app.route('/demo-api', methods=["GET"])
 def entrypoint():
     '''
         Application EntryPoint, allowing only GET requests for now
-        Returning status code 403 [not allowed] for POST requests
+        Returning status code 405 [not allowed] for other requests
     '''
     if request.method == "GET":
         return get_entrypoint()

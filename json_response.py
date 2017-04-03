@@ -21,7 +21,7 @@ def get_entrypoint(ctype="application/ld+json", status=200):
     response.headers["Content-type"] = ctype
     return response
 
-def not_allowed(ctype="text/html", status=403):
+def not_allowed(ctype="text/html", status=405):
     response = jsonify({})
     response.headers["Content-type"] = ctype
     response.status_code = status
