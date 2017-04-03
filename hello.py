@@ -6,7 +6,7 @@ linked_data = json.load(open("Spacecraft.json", "r"))
 entrypoint = "/"
 
 # Base url, serves api documentation and the entrypoint
-@app.route('/')
+@app.route('/demo-api/vocab')
 def entrypoint():
     if request.method == "GET"
         return ()

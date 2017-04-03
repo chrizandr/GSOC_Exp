@@ -41,7 +41,6 @@
           "@type": "@id"
         }
     },
-
     "@id" : "http://localhost:8000/demo-api/vocab#",
     "@type": "ApiDocumentation",
     "supportedClass": [
@@ -55,9 +54,9 @@
                     "property" : "http://umbel.org/umbel/rc/Spacecraft.n3",
                     "hydra:title": "Spacecraft",
                     "hydra:description": "Spacecraft containing the satellite device",
-                    "required": true,
-                    "readonly": false,
-                    "writeonly": false
+                    "required": "true",
+                    "readonly": "false",
+                    "writeonly": "false"
                 },
             ]
         },
@@ -71,17 +70,17 @@
                     "property" : "http://umbel.org/umbel/rc/Spacecraft.n3",
                     "hydra:title": "Spacecraft",
                     "hydra:description": "spacecraft carrying satellite device",
-                    "required": true,
-                    "readonly": false,
-                    "writeonly": false
+                    "required": "true",
+                    "readonly": "false",
+                    "writeonly": "false"
                 },
                 {
                     "property" : "http://umbel.org/umbel/rc/AirTransportationVehicle.n3",
                     "hydra:title": "AirTransportationVehicle",
                     "hydra:description": "transportation vehicle for satellite device",
-                    "required": true,
-                    "readonly": false,
-                    "writeonly": false
+                    "required": "true",
+                    "readonly": "false",
+                    "writeonly": "false"
                 }
             ]
         },
@@ -103,17 +102,17 @@
                     "property" : "http://umbel.org/umbel/rc/Satellite_Device.n3",
                     "hydra:title": "Satellite_Device",
                     "hydra:description": "an artificial satellite",
-                    "required": true,
-                    "readonly": false,
-                    "writeonly": false
+                    "required": "true",
+                    "readonly": "false",
+                    "writeonly": "false"
                 },
                 {
                     "property" : "http://umbel.org/umbel/rc/AstronomicalObservatory.n3",
                     "hydra:title": "AstronomicalObservatory",
                     "hydra:description": "",
-                    "required": true,
-                    "readonly": false,
-                    "writeonly": false
+                    "required": "true",
+                    "readonly": "false",
+                    "writeonly": "false"
                 }
             ]
         },
@@ -127,17 +126,17 @@
                     "property" : "http://umbel.org/umbel/rc/Satellite_Device.n3",
                     "hydra:title": "Satellite_Device",
                     "hydra:description": "an artificial satellite",
-                    "required": true,
-                    "readonly": false,
-                    "writeonly": false
+                    "required": "true",
+                    "readonly": "false",
+                    "writeonly": "false"
                 },
                 {
                     "property" : "http://ontology.projectchronos.eu/engineering/InformationGatheringDevice",
                     "hydra:title": "InformationGatheringDevice",
                     "hydra:description": "device typically used in instances of gathering information.",
-                    "required": true,
-                    "readonly": false,
-                    "writeonly": false
+                    "required": "true",
+                    "readonly": "false",
+                    "writeonly": "false"
                 }
             ]
         },
@@ -151,9 +150,9 @@
                     "property" : "http://umbel.org/umbel/rc/Satellite_Device.n3",
                     "hydra:title": "Satellite_Device",
                     "hydra:description": "an artificial satellite",
-                    "required": true,
-                    "readonly": false,
-                    "writeonly": false
+                    "required": "true",
+                    "readonly": "false",
+                    "writeonly": "false"
                 }
             ]
         },
@@ -167,13 +166,56 @@
                     "property" : "http://ontology.projectchronos.eu/engineering/InformationGatheringDevice",
                     "hydra:title": "InformationGatheringDevice",
                     "hydra:description": "device typically used in instances of gathering information.",
-                    "required": true,
-                    "readonly": false,
-                    "writeonly": false
+                    "required": "true",
+                    "readonly": "false",
+                    "writeonly": "false"
+                }
+            ]
+        },
+        {
+            "@id": "vocab:EntryPoint",
+            "@type": "hydra:Class",
+            "subClassOf": ""null"",
+            "label": "EntryPoint",
+            "description": "Entry Point for the API",
+            "supportedOperation": [
+                {
+                    "@id": "_:entry_point",
+                    "@type": "hydra:Operation",
+                    "method": "GET",
+                    "label": "The APIs main entry point.",
+                    "description": ""null"",
+                    "expects": ""null"",
+                    "returns": "vocab:EntryPoint",
+                    "statusCodes": [
+                    ]
+                }
+            ],
+            "supportedProperty": [
+                {
+                    "property": {
+                        "@id": "vocab:EntryPoint/Satellite_Device",
+                        "@type": "hydra:Link",
+                        "label": "Satellite_Device",
+                        "description": "The Satellite_Device collection",
+                        "domain": "vocab:EntryPoint",
+                        "range": "vocab:EventCollection",
+                        "supportedOperation": [
+                            {
+                                "@id": "_:Satellite_Device_retrieve",
+                                "@type": "hydra:Operation",
+                                "method": "GET",
+                                "label": "Retrieves all Satellite_Device entities",
+                                "description": "null",
+                                "expects": "null",
+                                "returns": "vocab:EventCollection",
+                                "statusCodes": [
+                                ]
+                            }
+                        ]
+                    }
                 }
             ]
         }
-
-
     ]
 }

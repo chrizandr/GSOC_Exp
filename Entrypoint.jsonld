@@ -1,5 +1,11 @@
 {
-    "@context": "/demo-api/contexts/EntryPoint.jsonld",
-    "@id": "/demo-api/",
-    "@type": "EntryPoint",
+     "@context": {
+         "hydra": "http://www.w3.org/ns/hydra/core#",
+         "vocab": "https://localhost:8000/vocab#",
+         "EntryPoint": "vocab:EntryPoint",
+         "Satellite_Device" : {
+            "@id": "vocab:EntryPoint/Satellite_Device",
+            "@type": "@id"
+        }
+     }
 }
