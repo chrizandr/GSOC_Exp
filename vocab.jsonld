@@ -57,7 +57,7 @@
                     "required": "true",
                     "readonly": "false",
                     "writeonly": "false"
-                },
+                }
             ]
         },
         {
@@ -175,7 +175,7 @@
         {
             "@id": "vocab:EntryPoint",
             "@type": "hydra:Class",
-            "subClassOf": ""null"",
+            "subClassOf": "null",
             "label": "EntryPoint",
             "description": "Entry Point for the API",
             "supportedOperation": [
@@ -184,8 +184,8 @@
                     "@type": "hydra:Operation",
                     "method": "GET",
                     "label": "The APIs main entry point.",
-                    "description": ""null"",
-                    "expects": ""null"",
+                    "description": "null",
+                    "expects": "null",
                     "returns": "vocab:EntryPoint",
                     "statusCodes": [
                     ]
