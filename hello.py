@@ -8,6 +8,5 @@ entrypoint = "/"
 # Base url, serves api documentation and the entrypoint
 @app.route('/')
 def entrypoint():
-    global linked_data
-    path = request.path
-    return (str(linked_data["@context"]))
+    if request.method == "GET"
+        return ()

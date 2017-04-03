@@ -1,0 +1,179 @@
+{
+    "@context": {
+        "vocab": "http://localhost:8000/demo-api/vocab#",
+        "hydra": "http://www.w3.org/ns/hydra/core#",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "ApiDocumentation": "hydra:ApiDocumentation",
+        "property": {
+          "@id": "hydra:property",
+          "@type": "@id"
+        },
+        "readonly": "hydra:readonly",
+        "writeonly": "hydra:writeonly",
+        "supportedClass": "hydra:supportedClass",
+        "supportedProperty": "hydra:supportedProperty",
+        "supportedOperation": "hydra:supportedOperation",
+        "method": "hydra:method",
+        "expects": {
+          "@id": "hydra:expects",
+          "@type": "@id"
+        },
+        "returns": {
+          "@id": "hydra:returns",
+          "@type": "@id"
+        },
+        "statusCodes": "hydra:statusCodes",
+        "code": "hydra:statusCode",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "label": "rdfs:label",
+        "description": "rdfs:comment",
+        "domain": {
+          "@id": "rdfs:domain",
+          "@type": "@id"
+        },
+        "range": {
+          "@id": "rdfs:range",
+          "@type": "@id"
+        },
+        "subClassOf": {
+          "@id": "rdfs:subClassOf",
+          "@type": "@id"
+        }
+    },
+
+    "@id" : "http://localhost:8000/demo-api/vocab#",
+    "@type": "ApiDocumentation",
+    "supportedClass": [
+        {
+            "@id": "http://ontology.projectchronos.eu/engineering/Satellite_Device",
+            "@type": "hydra:Class",
+            "hydra:title": "Satellite_Device",
+            "hydra:description" : "an artificial satellite",
+            "supportedProperty" : [
+                {
+                    "property" : "http://umbel.org/umbel/rc/Spacecraft.n3",
+                    "hydra:title": "Spacecraft",
+                    "hydra:description": "Spacecraft containing the satellite device",
+                    "required": true,
+                    "readonly": false,
+                    "writeonly": false
+                },
+            ]
+        },
+        {
+            "@id": "http://ontology.projectchronos.eu/engineering/GroundToOrbitVehicle",
+            "@type": "hydra:Class",
+            "hydra:title": "GroundToOrbitVehicle",
+            "hydra:description" : "a rocket or any transportation vehicle that can reach orbit",
+            "supportedProperty": [
+                {
+                    "property" : "http://umbel.org/umbel/rc/Spacecraft.n3",
+                    "hydra:title": "Spacecraft",
+                    "hydra:description": "spacecraft carrying satellite device",
+                    "required": true,
+                    "readonly": false,
+                    "writeonly": false
+                },
+                {
+                    "property" : "http://umbel.org/umbel/rc/AirTransportationVehicle.n3",
+                    "hydra:title": "AirTransportationVehicle",
+                    "hydra:description": "transportation vehicle for satellite device",
+                    "required": true,
+                    "readonly": false,
+                    "writeonly": false
+                }
+            ]
+        },
+        {
+            "@id": "http://ontology.projectchronos.eu/engineering/InformationGatheringDevice",
+            "@type": "hydra:Class",
+            "hydra:title": "InformationGatheringDevice",
+            "hydra:description" : "device typically used in instances of gathering information.",
+            "supportedProperty": [
+            ]
+        },
+        {
+            "@id": "http://ontology.projectchronos.eu/engineering/AstronomicalSatellite",
+            "@type": "hydra:Class",
+            "hydra:title": "AstronomicalSatellite",
+            "hydra:description" : "an artificial satellite",
+            "supportedProperty": [
+                {
+                    "property" : "http://umbel.org/umbel/rc/Satellite_Device.n3",
+                    "hydra:title": "Satellite_Device",
+                    "hydra:description": "an artificial satellite",
+                    "required": true,
+                    "readonly": false,
+                    "writeonly": false
+                },
+                {
+                    "property" : "http://umbel.org/umbel/rc/AstronomicalObservatory.n3",
+                    "hydra:title": "AstronomicalObservatory",
+                    "hydra:description": "",
+                    "required": true,
+                    "readonly": false,
+                    "writeonly": false
+                }
+            ]
+        },
+        {
+            "@id": "http://ontology.projectchronos.eu/engineering/WeatherSatellite",
+            "@type": "hydra:Class",
+            "hydra:title": "WeatherSatellite",
+            "hydra:description" : "an satellite collecting data on the weather of the heavenly body which it orbits",
+            "supportedProperty": [
+                {
+                    "property" : "http://umbel.org/umbel/rc/Satellite_Device.n3",
+                    "hydra:title": "Satellite_Device",
+                    "hydra:description": "an artificial satellite",
+                    "required": true,
+                    "readonly": false,
+                    "writeonly": false
+                },
+                {
+                    "property" : "http://ontology.projectchronos.eu/engineering/InformationGatheringDevice",
+                    "hydra:title": "InformationGatheringDevice",
+                    "hydra:description": "device typically used in instances of gathering information.",
+                    "required": true,
+                    "readonly": false,
+                    "writeonly": false
+                }
+            ]
+        },
+        {
+            "@id": "http://ontology.projectchronos.eu/engineering/EarthRemoteSensingSatellite",
+            "@type": "hydra:Class",
+            "hydra:title": "EarthRemoteSensingSatellite",
+            "hydra:description" : "an artificial satellite",
+            "supportedProperty": [
+                {
+                    "property" : "http://umbel.org/umbel/rc/Satellite_Device.n3",
+                    "hydra:title": "Satellite_Device",
+                    "hydra:description": "an artificial satellite",
+                    "required": true,
+                    "readonly": false,
+                    "writeonly": false
+                }
+            ]
+        },
+        {
+            "@id": "http://ontology.projectchronos.eu/engineering/SpaceProbe",
+            "@type": "hydra:Class",
+            "hydra:title": "SpaceProbe",
+            "hydra:description" : "These are unmanned vehicles which are sent to other bodies in the Solar system for the purpose gathering data. Sometimes a separate vehicle (probe or lander) is launched from the main vehicle, the smaller vehicle usually being referred to as a probe. In these cases, both vehicle would be SpaceProbes in the present sense.",
+            "supportedProperty": [
+                {
+                    "property" : "http://ontology.projectchronos.eu/engineering/InformationGatheringDevice",
+                    "hydra:title": "InformationGatheringDevice",
+                    "hydra:description": "device typically used in instances of gathering information.",
+                    "required": true,
+                    "readonly": false,
+                    "writeonly": false
+                }
+            ]
+        }
+
+
+    ]
+}

@@ -41,6 +41,7 @@
                 "@id": "http://hypermedia.projectchronos.eu/data/dbpediadocs/spacecraft"
             }
         },
+        
         {
             "@id": "http://ontology.projectchronos.eu/spacecraft/isSubsystemOf",
             "@type" : [
@@ -50,6 +51,7 @@
             "skos:prefLabel": "subject is a device or a system of devices that is subsystem of a wider system or device",
             "rdf:label": "isSubsystemOf"
         },
+
         {
             "@id": "http://ontology.projectchronos.eu/spacecraft/isComponentOf",
             "@type" : [
@@ -58,6 +60,7 @@
             "skos:prefLabel": "the subject is a member of a wider artifact, that is a set of artifacts",
             "rdf:label": "isComponentOf"
         },
+
         {
             "@id": "http://ontology.projectchronos.eu/spacecraft/hasSubSystem",
             "owl:inverseOf": { "@id": "http://ontology.projectchronos.eu/spacecraft/isSubsystemOf" },
@@ -66,6 +69,7 @@
             ],
             "rdf:label": "hasSubSystem"
         },
+
         {
             "@id": "http://ontology.projectchronos.eu/spacecraft/Subsystem_Spacecraft",
             "@type" : "http://www.w3.org/2002/07/owl#Class",
@@ -97,6 +101,7 @@
             "rdf:label": "Subsystem_Spacecraft",
             "spacecraft:isComponent": { "@id": "http://ontology.projectchronos.eu/spacecraft/Spacecraft" }
         },
+
         {
             "@id": "http://ontology.projectchronos.eu/spacecraft/Payload_Spacecraft",
             "@type" : "http://www.w3.org/2002/07/owl#Class",
@@ -113,6 +118,7 @@
             "skos:prefLabel": "Payload_Spacecraft",
             "spacecraft:isComponent": { "@id": "http://ontology.projectchronos.eu/spacecraft/Spacecraft" }
         },
+
         {
             "@id" : "http://ontology.projectchronos.eu/subsystems/embedSensor",
             "@type" : [
@@ -131,6 +137,7 @@
             "skos:prefLabel" : "a subsystem that holds a sensor",
             "skos:altLabel" : "holds a sensor"
         },
+
         {
             "@id": "http://ontology.projectchronos.eu/spacecraft/isDeployedIn",
             "@type" : [
