@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import jsonify
+import json
 
 def get_entrypoint(ctype="application/ld+json", status=200):
     response = jsonify(
@@ -28,7 +29,7 @@ def not_allowed(ctype="text/html", status=405):
     return response
 
 def get_vocab(ctype="application/ld+json", status=200):
-    response = jsonify(json.loads(open("vocab.jsonld","r")))
+    response = jsonify(json.load(open("vocab.jsonld", "r")))
     response.status_code = status
     response.headers["Content-type"] = ctype
     return response
