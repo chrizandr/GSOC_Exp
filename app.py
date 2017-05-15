@@ -7,7 +7,8 @@ from flask_restful import Api, Resource
 from json_data.contexts import entrypoint_context, product_collection_context, product_context
 from json_data.entrypoint import entrypoint
 from json_data.vocab import vocab
-import os
+import json
+import sqlite3
 # from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
@@ -23,17 +24,53 @@ def set_response_headers(resp, ct="application/ld+json", status_code=200):
     return resp
 
 
-def gen_dummy_product():
-    return jsonify(
-        {
-            "@context": "/api/contexts/Product.jsonld",
-            "@id": "/api/products/*",
-            "@type": "Product",
-            "name": "Coffee",
-            "description": "This is Coffee, it tastes good",
-        }
+class Raw_Product(object):
+    def __init__(self, pid, description, price, name):
+        self.id = pid
+        self.description = description
+        self.price = price
+        self.name = name
 
-    )
+## Generate product json data from Raw_product
+def gen_product_json(product):
+
+    product_template = {
+        "@id": "/api/products/*",
+        "@type": "Product",
+        "name": "Coffee",
+        "description": "Coffee_description",
+        "price":1.0
+    }
+
+    product_template['@id'] = "/api/products/{}".format(product.id)
+    product_template['description'] = product.description
+    product_template['name'] = product.name
+    product_template['price'] = float(product.price)
+
+    return product_template
+
+def hydrafy_product(product):
+    product_data = gen_product_json(product)
+    ## Adding context
+    product_data["@context"] = product_context["@context"]
+    return jsonify(product_data)
+
+def hydrafy_products(product_list):
+    product_collection_template = {
+    "@id": "/api/products",
+    "@type": "ProductCollection",
+    "members": []
+    }
+
+    members = []
+    for product in product_list:
+        members.append(gen_product_json(product))
+    product_collection_template["members"] = members
+
+    product_collection_template["@context"] = product_collection_context["@context"]
+
+    return product_collection_template
+
 # For now I am using dummy data, later on we can switch to dynamic data
 
 
@@ -98,7 +135,16 @@ class Products(Resource):
     """All operations related to Products Collection"""
 
     def get(self):
-        return set_response_headers(gen_products(), 'application/ld+json', 200)
+        conn = sqlite3.connect('database.db')
+        cur = conn.cursor()
+        cur.execute('select * from products')
+        products_data = cur.fetchall()
+        raw_products = []
+        for data in products_data:
+            raw_products.append(Raw_Product(data[0], data[1], data[2], data[3]))
+        # print(raw_products)
+
+        return set_response_headers(jsonify(hydrafy_products(raw_products)), 'application/ld+json', 200)
 
 api.add_resource(Products, "/api/products", endpoint="products")
 
@@ -107,7 +153,16 @@ class Product(Resource):
     """All operations related to Product"""
 
     def get(self, product_id):
-        return set_response_headers(gen_dummy_product(), 'application/ld+json', 200)
+        # return set_response_headers(gen_dummy_product(), 'application/ld+json', 200)
+        conn = sqlite3.connect('database.db')
+        cur = conn.cursor()
+        if int(product_id):
+            cur.execute('select * from products where P_id = {}'.format(int(product_id)))
+            data = cur.fetchone()
+            print(data)
+            # Create raw_product class instance
+            product = Raw_Product(data[0], data[1], data[2], data[3])
+            return set_response_headers(hydrafy_product(product), 'application/ld+json', 200)
 
     def post(self):
         pass

@@ -28,6 +28,8 @@ product_context = {
         "Product": "http://schema.org/Product",
         "name": "http://schema.org/name",
         "description": "http://schema.org/description",
+        "price": "http://schema.org/price",
+        "id": "http://schema.org/productID"
 
     }
 }
