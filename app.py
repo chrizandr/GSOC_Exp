@@ -143,7 +143,7 @@ class Products(Resource):
         for data in products_data:
             raw_products.append(Raw_Product(data[0], data[1], data[2], data[3]))
         # print(raw_products)
-
+        conn.close()
         return set_response_headers(jsonify(hydrafy_products(raw_products)), 'application/ld+json', 200)
 
 api.add_resource(Products, "/api/products", endpoint="products")
@@ -159,10 +159,13 @@ class Product(Resource):
         if int(product_id):
             cur.execute('select * from products where P_id = {}'.format(int(product_id)))
             data = cur.fetchone()
-            print(data)
+            if not data:
+                return set_response_headers(jsonify({"Error":"No product available"}), 'application/ld+json', 404)
+            # print(data)
             # Create raw_product class instance
             product = Raw_Product(data[0], data[1], data[2], data[3])
-            return set_response_headers(hydrafy_product(product), 'application/ld+json', 200)
+        conn.close()
+        return set_response_headers(hydrafy_product(product), 'application/ld+json', 200)
 
     def post(self):
         pass
@@ -170,8 +173,19 @@ class Product(Resource):
     def put(self):
         pass
 
-    def delete(self):
-        pass
+    def delete(self, product_id):
+        conn = sqlite3.connect('database.db')
+        cur = conn.cursor()
+        if int(product_id):
+            cur.execute('select * from products where P_id = {}'.format(int(product_id)))
+            data = cur.fetchall()
+            if len(data)>0:
+                cur.execute('delete from products where P_id = {}'.format(int(product_id)))
+                conn.commit()
+                output = {"Done":"Product with id {} successfully deleted.".format(int(product_id))}
+            else:
+                output = {"Error":"No product with id {} available.".format(int(product_id))}
+        return set_response_headers(jsonify(output), 'application/ld+json', 301)
 
 api.add_resource(
     Product, "/api/products/<string:product_id>", endpoint="product")
