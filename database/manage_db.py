@@ -5,7 +5,6 @@ import random, string
 def gen_random_price():
     return round(random.uniform(10, 1000),2)
 
-print(gen_random_price())
 
 # Generate random names for products
 def gen_random_name():
@@ -27,7 +26,7 @@ def gen_random_desc():
 
 # Insert N rows into the database of dummy data
 def insert_data(n):
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect('../database.db')
 
     cur = conn.cursor()
     for i in range(n):
@@ -40,10 +39,10 @@ def insert_data(n):
     conn.commit()
     conn.close()
 
-insert_data(100)
+# insert_data(100)
 
 def get_all_data():
-    conn = sqlite3.connect("database.db")
+    conn = sqlite3.connect("../database.db")
     # conn.row_factory = sqlite3.Row
     cur = conn.cursor()
 
