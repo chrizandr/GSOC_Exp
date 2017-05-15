@@ -4,9 +4,9 @@
 
 from flask import Flask, jsonify, url_for, redirect, request
 from flask_restful import Api, Resource
-from contexts import entrypoint_context, product_collection_context, product_context
-from entrypoint import entrypoint
-from vocab import vocab
+from json_data.contexts import entrypoint_context, product_collection_context, product_context
+from json_data.entrypoint import entrypoint
+from json_data.vocab import vocab
 import os
 # from flask_cors import CORS, cross_origin
 
@@ -111,7 +111,7 @@ class Product(Resource):
 
     def post(self):
         pass
-        
+
     def put(self):
         pass
 
