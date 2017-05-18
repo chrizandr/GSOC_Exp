@@ -119,7 +119,7 @@ class Index(Resource):
     def get(self):
         return set_response_headers(jsonify(entrypoint), 'application/ld+json', 200)
 
-api.add_resource(Index, "/api", endpoint="api")
+api.add_resource(Index, "/apii", endpoint="api")
 
 
 class Vocab(Resource):
@@ -225,3 +225,5 @@ api.add_resource(
 
 if __name__ == "__main__":
     app.run(host = '0.0.0.0', debug=True, port=80)
+
+#volume test 1

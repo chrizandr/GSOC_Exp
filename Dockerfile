@@ -2,8 +2,12 @@ FROM tiangolo/uwsgi-nginx-flask:flask-python3.5-index-upload
 
 MAINTAINER Akshay Dahiya <xadahiya@gmail.com>
 
-COPY ./app /app
+RUN rm -rf /app
+
+VOLUME /app
+
+COPY ./app/requirements.txt requirements.txt
 RUN pip install -U pip
-RUN pip install -r /app/requirements.txt
+RUN pip install -r requirements.txt
 
 ENV MESSAGE "Hail Hydra"
