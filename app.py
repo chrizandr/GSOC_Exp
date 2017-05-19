@@ -4,21 +4,37 @@
 
 from flask import Flask, jsonify, url_for, redirect, request
 from flask_restful import Api, Resource
-from json_data.contexts import entrypoint_context, product_collection_context, product_context
+from json_data.contexts import *
 from json_data.entrypoint import entrypoint
 from json_data.vocab import vocab
 import json
 import sqlite3
+import psycopg2 as psql
+import pdb
+from models import *
 # from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 api = Api(app)
-# CORS(app)
 
+db_credentials = "dbname='hydra' user='hydrus' host='localhost' password='hydra'"
+keymap = {
+    "COM" : "Spacecraft_Communication",
+    "PROP": "Spacecraft_Propulsion",
+    "DTR": "Spacecraft_Detector",
+    "PPW": "Spacecraft_PrimaryPower",
+    "BCK": "Spacecraft_BackupPower",
+    "THR": "Spacecraft_Thermal",
+    "STR":  "Spacecraft_Structure",
+    "CHD": "Spacecraft_CDH",
+    "AODCS": "Spacecraft_AODCS",
+}
 
 def set_response_headers(resp, ct="application/ld+json", status_code=200):
-    """ Sets the response headers
-        Default : { Content-type:"JSON-LD", status_code:200}"""
+    """
+    Sets the response headers
+    Default : { Content-type:"JSON-LD", status_code:200}
+    """
     resp.status_code = status_code
     resp.headers['Content-type'] = ct
     return resp
@@ -31,86 +47,42 @@ class Raw_Product(object):
         self.price = price
         self.name = name
 
-## Generate product json data from Raw_product
-def gen_product_json(product):
+def gen_subsystem_json(sub_id, subsystem):
 
-    product_template = {
-        "@id": "/api/products/*",
-        "@type": "Product",
-        "name": "Coffee",
-        "description": "Coffee_description",
-        "price":1.0
+    template = {
+        "@id": "/api/subsystem/*",
+        "@type": "SubSystem",
     }
 
-    product_template['@id'] = "/api/products/{}".format(product.id)
-    product_template['description'] = product.description
-    product_template['name'] = product.name
-    product_template['price'] = float(product.price)
+    template['@id'] = "/api/subsystem/{}".format(sub_id)
+    for key in vars(subsystem).keys():
+        template[key] = vars(subsystem)[key]
+    return template
 
-    return product_template
 
-def hydrafy_product(product):
-    product_data = gen_product_json(product)
-    ## Adding context
-    product_data["@context"] = product_context["@context"]
-    return jsonify(product_data)
+def hydrafy_subsystem(sub_id, subsystem):
+    subsystem_data = gen_subsystem_json(sub_id, subsystem)
+    # Adding context
+    subsystem_data["@context"] = subsystem_context["@context"]
+    return jsonify(subsystem_data)
 
-def hydrafy_products(product_list):
-    product_collection_template = {
-    "@id": "/api/products",
-    "@type": "ProductCollection",
+
+def hydrafy_subsystems(subsystem_list):
+    subsystem_collection_template = {
+    "@id": "/api/subsystems",
+    "@type": "SubSystemCollection",
     "members": []
     }
 
     members = []
-    for product in product_list:
-        members.append(gen_product_json(product))
-    product_collection_template["members"] = members
+    for sub_id, subsystem in subsystem_list:
+        members.append(gen_subsystem_json(sub_id, subsystem))
+    subsystem_collection_template["members"] = members
 
-    product_collection_template["@context"] = product_collection_context["@context"]
+    subsystem_collection_template["@context"] = subsystem_collection_context["@context"]
 
-    return product_collection_template
+    return subsystem_collection_template
 
-# For now I am using dummy data, later on we can switch to dynamic data
-
-
-def gen_products():
-    return jsonify({
-        "@context": "/api/contexts/ProductCollection.jsonld",
-        "@id": "/api/products",
-        "@type": "ProductCollection",
-        "members": [
-            {
-                "@id": "/api/products/80",
-                "@type": "http://schema.org/Product"
-            },
-            {
-                "@id": "/api/products/81",
-                "@type": "http://schema.org/Product"
-            },
-            {
-                "@id": "/api/products/83",
-                "@type": "http://schema.org/Product"
-            },
-            {
-                "@id": "/api/products/84",
-                "@type": "http://schema.org/Product"
-            },
-            {
-                "@id": "/api/products/85",
-                "@type": "http://schema.org/Products"
-            },
-            {
-                "@id": "/api/products/86",
-                "@type": "http://schema.org/Product"
-            },
-            {
-                "@id": "/api/products/87",
-                "@type": "http://schema.org/Product"
-            }
-        ]
-    }
-    )
 
 class Index(Resource):
 
@@ -131,64 +103,72 @@ class Vocab(Resource):
 api.add_resource(Vocab, "/api/vocab", endpoint="vocab")
 
 
-class Products(Resource):
-    """All operations related to Products Collection"""
+class Subsystems(Resource):
+    """Class for SubSystems Collection"""
 
     def get(self):
-        conn = sqlite3.connect('database.db')
+        # global db_credentials
+        print("Connecting")
+        conn = psql.connect(db_credentials)
         cur = conn.cursor()
-        cur.execute('select * from products')
-        products_data = cur.fetchall()
-        raw_products = []
-        for data in products_data:
-            raw_products.append(Raw_Product(data[0], data[1], data[2], data[3]))
-        # print(raw_products)
+        cur.execute("SELECT * FROM SubSystem")
+        index = cur.fetchall()
+        relations = set([x[2] for x in index])
+        # pdb.set_trace()
+        objects = list()
+        for relation in relations:
+            query = "SELECT * FROM SubSystem INNER JOIN {} ON SubSystem.ID={}.ID".format(relation, relation)
+            cur.execute(query)
+            rows = cur.fetchall()
+            objects = objects + [(data[0], eval(keymap[relation])(data[1], *data[4:])) for data in rows]
         conn.close()
-        return set_response_headers(jsonify(hydrafy_products(raw_products)), 'application/ld+json', 200)
 
-api.add_resource(Products, "/api/products", endpoint="products")
+        return set_response_headers(jsonify(hydrafy_subsystems(objects)), 'application/ld+json', 200)
+
+api.add_resource(Subsystems, "/api/subsystems", endpoint="subsystems")
 
 
-class Product(Resource):
+class Subsystem(Resource):
     """All operations related to Product"""
 
-    def get(self, product_id):
-        # return set_response_headers(gen_dummy_product(), 'application/ld+json', 200)
-        conn = sqlite3.connect('database.db')
+    def get(self, sub_id):
+        global db_credentials
+        conn = psql.connect(db_credentials)
         cur = conn.cursor()
-        if int(product_id):
-            cur.execute('select * from products where P_id = {}'.format(int(product_id)))
+        if int(sub_id):
+            cur.execute('SELECT * FROM SubSystem WHERE ID = %s', (sub_id,))
+            sub_id, name, relation = cur.fetchone()
+            query = "SELECT * FROM SubSystem INNER JOIN {} ON SubSystem.ID={}.ID WHERE SubSystem.ID = {}".format(relation, relation, sub_id)
+            cur.execute(query)
             data = cur.fetchone()
             if not data:
-                return set_response_headers(jsonify({"Error":"No product available"}), 'application/ld+json', 404)
-            # print(data)
-            # Create raw_product class instance
-            product = Raw_Product(data[0], data[1], data[2], data[3])
+                return set_response_headers(jsonify({"Error":"No data available"}), 'application/ld+json', 404)
+            subsystem = eval(keymap[relation])(data[1], *data[4:])
         conn.close()
-        return set_response_headers(hydrafy_product(product), 'application/ld+json', 200)
+        return set_response_headers(hydrafy_subsystem(sub_id, subsystem), 'application/ld+json', 200)
 
     def post(self):
         pass
 
-    def put(self):
-        pass
-
-    def delete(self, product_id):
-        conn = sqlite3.connect('database.db')
+    def delete(self, sub_id):
+        global db_credentials
+        conn = psql.connect(db_credentials)
         cur = conn.cursor()
-        if int(product_id):
-            cur.execute('select * from products where P_id = {}'.format(int(product_id)))
-            data = cur.fetchall()
-            if len(data)>0:
-                cur.execute('delete from products where P_id = {}'.format(int(product_id)))
+        if int(sub_id):
+            cur.execute('SELECT * FROM SubSystem WHERE ID = %s', (sub_id,))
+            sub_id, name, relation = cur.fetchone()
+            if name:
+                query = 'DELETE FROM {} ID = {}'.format(relation, sub_id)
+                cur.execute(query)
+                cur.execute('DELETE FROM SubSystem WHERE ID = %s', (sub_id,))
                 conn.commit()
-                output = {"Done":"Product with id {} successfully deleted.".format(int(product_id))}
+                output = {"Done":"Product with id {} successfully deleted.".format(int(sub_id))}
             else:
                 output = {"Error":"No product with id {} available.".format(int(product_id))}
         return set_response_headers(jsonify(output), 'application/ld+json', 301)
 
 api.add_resource(
-    Product, "/api/products/<string:product_id>", endpoint="product")
+    Subsystem, "/api/subsystem/<string:sub_id>", endpoint="subsystem")
 
 
 class EntryPointContext(Resource):
@@ -201,27 +181,27 @@ api.add_resource(EntryPointContext, "/api/contexts/EntryPoint.jsonld",
                  endpoint="entrypoint_context")
 
 
-class ProductCollectionContext(Resource):
+class SubSystemCollectionContext(Resource):
     """Handles Product collection Contexts"""
 
     def get(self):
-        return set_response_headers(jsonify(product_collection_context), 'application/ld+json', 200)
+        return set_response_headers(jsonify(subsystem_collection_context), 'application/ld+json', 200)
 
-api.add_resource(ProductCollectionContext, "/api/contexts/ProductCollection.jsonld",
-                 endpoint="product_collection_context")
+api.add_resource(SubSystemCollectionContext, "/api/contexts/SubSystemCollection.jsonld",
+                 endpoint="subsystem_collection_context")
 
 
-class ProductContext(Resource):
+class SubSystemContext(Resource):
     """ Handles Product contexts"""
 
     def get(self):
         return set_response_headers(jsonify(product_context), 'application/ld+json', 200)
 
 api.add_resource(
-    ProductContext, "/api/contexts/Product.jsonld", endpoint="product_context")
+    SubSystemContext, "/api/contexts/SubSystem.jsonld", endpoint="subsystem_context")
 
 
 
 
 if __name__ == "__main__":
-    app.run(host = '0.0.0.0')
+    app.run(host = 'localhost', debug=True)
