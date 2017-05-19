@@ -122,7 +122,7 @@ api.add_resource(Subsystems, "/api/subsystems", endpoint="subsystems")
 
 
 class Subsystem(Resource):
-    """All operations related to Product"""
+    """All operations related to SubSystem"""
 
     def get(self, sub_id):
         global db_credentials
@@ -175,7 +175,7 @@ api.add_resource(EntryPointContext, "/api/contexts/EntryPoint.jsonld",
 
 
 class SubSystemCollectionContext(Resource):
-    """Handles Product collection Contexts"""
+    """Handles SubSystem collection Contexts"""
 
     def get(self):
         return set_response_headers(jsonify(subsystem_collection_context), 'application/ld+json', 200)
@@ -185,7 +185,7 @@ api.add_resource(SubSystemCollectionContext, "/api/contexts/SubSystemCollection.
 
 
 class SubSystemContext(Resource):
-    """ Handles Product contexts"""
+    """ Handles SubSystem contexts"""
 
     def get(self):
         return set_response_headers(jsonify(subsystem_context), 'application/ld+json', 200)
