@@ -40,13 +40,6 @@ def set_response_headers(resp, ct="application/ld+json", status_code=200):
     return resp
 
 
-class Raw_Product(object):
-    def __init__(self, pid, description, price, name):
-        self.id = pid
-        self.description = description
-        self.price = price
-        self.name = name
-
 def gen_subsystem_json(sub_id, subsystem):
 
     template = {
@@ -195,11 +188,10 @@ class SubSystemContext(Resource):
     """ Handles Product contexts"""
 
     def get(self):
-        return set_response_headers(jsonify(product_context), 'application/ld+json', 200)
+        return set_response_headers(jsonify(subsystem_context), 'application/ld+json', 200)
 
 api.add_resource(
     SubSystemContext, "/api/contexts/SubSystem.jsonld", endpoint="subsystem_context")
-
 
 
 
