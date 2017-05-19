@@ -1,5 +1,5 @@
 import sqlite3
-import random, string
+from generator import *
 
 ## Generate random prices for products in range 10-1000
 def gen_random_price():

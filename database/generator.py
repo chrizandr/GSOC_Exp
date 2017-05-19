@@ -1,5 +1,6 @@
 import random
 import json
+import psycopg2 as psql
 
 subsystems = dict({
     "communication" : {
@@ -96,9 +97,6 @@ def randomValue(interval):
         raise ValueError('value has to be dict')
     return random.randrange(interval['min'], interval['max'], 1) // 1
 
-def linearFunction():
-    pass
-
 
 def generateObject(name, subsystem):
     """
@@ -159,9 +157,10 @@ def generateObject(name, subsystem):
             result['type'] = 'active'
         return result
 
-output = []
-i = 0
-for i in range(0, 3):
+def gen_all_types():
+    output = []
+    global subsystems
+    i = 0
     for k, v in subsystems.items():
         # print(k)
         name = str(random.randrange(0, 50)) + str(random.choice(['T', 'W', 'KV', 'JFG'])) + ' ' + k
@@ -170,6 +169,49 @@ for i in range(0, 3):
         obj['id'] = i + 1
         obj['object'] = generateObject(k, v)
         output.append(obj)
-        i += 1
+        i+=1
+    return output
 
-print(json.dumps(output, indent=4))
+def insert_data(entries):
+    db_credentials = "dbname='hydra' user='hydrus' host='localhost' password='hydra'"
+    conn = psql.connect(db_credentials)
+    cur = conn.cursor()
+    for i in range(entries):
+        objects = gen_all_types()
+        for subsystem in objects:
+            name = subsystem["name"]
+            obj = subsystem["object"]
+            relation = subsystems[obj["category"]]["slug"]
+            cur.execute('INSERT INTO SubSystem (name, category) VALUES(%s, %s) RETURNING ID', (name, relation))
+            sub_id = cur.fetchone()[0]
+            command =""
+            if relation in ['COM', "PROP", "PPW", "BCK", "STR", "CDH"]:
+                command = "INSERT INTO {} VALUES ({}, {}, {}, {}, {}, {}, {})".format(
+                relation, sub_id, obj["power"], obj["mass"],
+                obj["cost"], obj["volume"], obj["minWorkingTemp"], obj["maxWorkingTemp"]
+                )
+            elif relation == "THR":
+                command = "INSERT INTO {} VALUES ({}, {}, {}, {}, {}, '{}', {}, {})".format(
+                relation, sub_id, obj["power"], obj["mass"], obj["cost"],
+                obj["volume"], str(obj["type"]), obj["minTemperature"], obj["maxTemperature"]
+                )
+            elif relation == "DTR":
+                command = "INSERT INTO {} VALUES ({}, {}, {}, {}, {}, '{}', {}, {})".format(
+                relation, sub_id, obj["power"], obj["mass"], obj["cost"],
+                obj["volume"], str(obj["type"]), obj["minWorkingTemp"], obj["maxWorkingTemp"]
+                )
+            elif relation == "AODCS":
+                command = "INSERT INTO {} VALUES ({}, {}, {}, {}, {}, '{}', '{}', {}, {})".format(
+                relation, sub_id, obj["power"], obj["mass"], obj["cost"], obj["volume"],
+                obj["type"], str(obj["mechanism"]), obj["minWorkingTemp"], obj["maxWorkingTemp"]
+                )
+            cur.execute(command)
+            conn.commit()
+    cur.close()
+    conn.close()
+    return None
+
+
+if __name__=="__main__":
+    # print(json.dumps(gen_all_types(), indent=4))
+    insert_data(2)

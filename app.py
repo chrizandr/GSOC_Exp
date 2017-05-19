@@ -26,7 +26,7 @@ keymap = {
     "BCK": "Spacecraft_BackupPower",
     "THR": "Spacecraft_Thermal",
     "STR":  "Spacecraft_Structure",
-    "CHD": "Spacecraft_CDH",
+    "CDH": "Spacecraft_CDH",
     "AODCS": "Spacecraft_AODCS",
 }
 

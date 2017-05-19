@@ -9,7 +9,6 @@ Host : localhost
 import psycopg2 as psql
 
 def create_relations():
-    print "Creating Relations in DB"
     db_credentials = "dbname='hydra' user='hydrus' host='localhost' password='hydra'"
     # Starting a connection to postgres DB and getting a cursor
     conn = psql.connect(db_credentials)
@@ -27,6 +26,7 @@ def create_relations():
         POWER INT,
         MASS INT,
         COST INT,
+        VOLUME INT,
         minWorkingTemp INT,
         maxWorkingTemp INT
     )
@@ -37,6 +37,7 @@ def create_relations():
         POWER INT,
         MASS INT,
         COST INT,
+        VOLUME INT,
         minWorkingTemp INT,
         maxWorkingTemp INT
     )
@@ -47,6 +48,8 @@ def create_relations():
         POWER INT,
         MASS INT,
         COST INT,
+        VOLUME INT,
+        TYPE TEXT,
         minWorkingTemp INT,
         maxWorkingTemp INT
     )
@@ -55,9 +58,9 @@ def create_relations():
     cur.execute("""CREATE TABLE PPW(
         ID INT UNIQUE REFERENCES SubSystem(ID),
         POWER INT,
-        DENSITY REAL,
         MASS INT,
         COST INT,
+        VOLUME INT,
         minWorkingTemp INT,
         maxWorkingTemp INT
     )
@@ -66,9 +69,9 @@ def create_relations():
     cur.execute("""CREATE TABLE BCK(
         ID INT UNIQUE REFERENCES SubSystem(ID),
         POWER INT,
-        DENSITY REAL,
         MASS INT,
         COST INT,
+        VOLUME INT,
         minWorkingTemp INT,
         maxWorkingTemp INT
     )
@@ -79,15 +82,19 @@ def create_relations():
         POWER INT,
         MASS INT,
         COST INT,
-        minWorkingTemp INT,
-        maxWorkingTemp INT
+        VOLUME INT,
+        TYPE TEXT,
+        minTemperature INT,
+        maxTemperature INT
     )
     """)
 
     cur.execute("""CREATE TABLE STR(
         ID INT UNIQUE REFERENCES SubSystem(ID),
+        POWER INT,
         MASS INT,
         COST INT,
+        VOLUME INT,
         minWorkingTemp INT,
         maxWorkingTemp INT
     )
@@ -98,6 +105,7 @@ def create_relations():
         POWER INT,
         MASS INT,
         COST INT,
+        VOLUME INT,
         minWorkingTemp INT,
         maxWorkingTemp INT
     )
@@ -108,10 +116,11 @@ def create_relations():
         POWER INT,
         MASS INT,
         COST INT,
+        VOLUME INT,
+        TYPE TEXT,
+        MECHANISM TEXT,
         minWorkingTemp INT,
-        maxWorkingTemp INT,
-        ACTIVE TEXT,
-        PASSIVE TEXT
+        maxWorkingTemp INT
     )
     """)
     # Close the cursor
@@ -143,3 +152,4 @@ def delete_all():
 
 if __name__=="__main__":
     create_relations()
+    # delete_all()
