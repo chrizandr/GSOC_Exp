@@ -1,3 +1,4 @@
+"""Models for Hydra Classes."""
 from flask_restful import Resource
 
 

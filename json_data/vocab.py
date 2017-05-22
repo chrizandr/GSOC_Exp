@@ -1,3 +1,4 @@
+"""Vocab for the API."""
 
 vocab = {
     "@context": {

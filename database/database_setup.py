@@ -1,5 +1,6 @@
 """
 Setup for the different relations in the database.
+
 The details of the connection are as follows
 DBName : hydra
 User : hydrus
@@ -8,7 +9,9 @@ Host : localhost
 """
 import psycopg2 as psql
 
+
 def create_relations():
+    """Create Relations in the DB according to Hydra Classes."""
     db_credentials = "dbname='hydra' user='hydrus' host='localhost' password='hydra'"
     # Starting a connection to postgres DB and getting a cursor
     conn = psql.connect(db_credentials)
@@ -130,7 +133,9 @@ def create_relations():
     # Close connection
     conn.close()
 
+
 def delete_all():
+    """Delete all relations created in the DB."""
     db_credentials = "dbname='hydra' user='hydrus' host='localhost' password='hydra'"
     # Starting a connection to postgres DB and getting a cursor
     conn = psql.connect(db_credentials)
@@ -150,6 +155,7 @@ def delete_all():
     conn.commit()
     conn.close()
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     create_relations()
     # delete_all()

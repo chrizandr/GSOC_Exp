@@ -1,3 +1,4 @@
+"""JSON response for API EntryPoint."""
 
 entrypoint = {
     "@context": "/api/contexts/EntryPoint.jsonld",

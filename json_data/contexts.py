@@ -1,4 +1,4 @@
-## Contains all contexts related to the coffeeshop-api
+"""Contexts related to SubSystems API."""
 
 entrypoint_context = {
     "@context": {
@@ -9,7 +9,7 @@ entrypoint_context = {
             "@id": "vocab:EntryPoint/SubSystems",
             "@type": "@id"
         },
-        "SubSystem":{
+        "SubSystem": {
             "@id": "vocab:EntryPoint/SubSystem",
             "@type": "@id"
         }
