@@ -25,13 +25,16 @@ def set_response_headers(resp, ct="application/ld+json", status_code=200):
 
 
 class Raw_Product(object):
+
     def __init__(self, pid, description, price, name):
         self.id = pid
         self.description = description
         self.price = price
         self.name = name
 
-## Generate product json data from Raw_product
+# Generate product json data from Raw_product
+
+
 def gen_product_json(product):
 
     product_template = {
@@ -39,7 +42,7 @@ def gen_product_json(product):
         "@type": "Product",
         "name": "Coffee",
         "description": "Coffee_description",
-        "price":1.0
+        "price": 1.0
     }
 
     product_template['@id'] = "/api/products/{}".format(product.id)
@@ -49,17 +52,19 @@ def gen_product_json(product):
 
     return product_template
 
+
 def hydrafy_product(product):
     product_data = gen_product_json(product)
-    ## Adding context
+    # Adding context
     product_data["@context"] = product_context["@context"]
     return jsonify(product_data)
 
+
 def hydrafy_products(product_list):
     product_collection_template = {
-    "@id": "/api/products",
-    "@type": "ProductCollection",
-    "members": []
+        "@id": "/api/products",
+        "@type": "ProductCollection",
+        "members": []
     }
 
     members = []
@@ -67,7 +72,8 @@ def hydrafy_products(product_list):
         members.append(gen_product_json(product))
     product_collection_template["members"] = members
 
-    product_collection_template["@context"] = product_collection_context["@context"]
+    product_collection_template[
+        "@context"] = product_collection_context["@context"]
 
     return product_collection_template
 
@@ -112,6 +118,7 @@ def gen_products():
     }
     )
 
+
 class Index(Resource):
 
     """A link to main entry point of the Web API"""
@@ -141,7 +148,8 @@ class Products(Resource):
         products_data = cur.fetchall()
         raw_products = []
         for data in products_data:
-            raw_products.append(Raw_Product(data[0], data[1], data[2], data[3]))
+            raw_products.append(Raw_Product(
+                data[0], data[1], data[2], data[3]))
         # print(raw_products)
         conn.close()
         return set_response_headers(jsonify(hydrafy_products(raw_products)), 'application/ld+json', 200)
@@ -153,14 +161,16 @@ class Product(Resource):
     """All operations related to Product"""
 
     def get(self, product_id):
-        # return set_response_headers(gen_dummy_product(), 'application/ld+json', 200)
+        # return set_response_headers(gen_dummy_product(),
+        # 'application/ld+json', 200)
         conn = sqlite3.connect('database.db')
         cur = conn.cursor()
         if int(product_id):
-            cur.execute('select * from products where P_id = {}'.format(int(product_id)))
+            cur.execute(
+                'select * from products where P_id = {}'.format(int(product_id)))
             data = cur.fetchone()
             if not data:
-                return set_response_headers(jsonify({"Error":"No product available"}), 'application/ld+json', 404)
+                return set_response_headers(jsonify({"Error": "No product available"}), 'application/ld+json', 404)
             # print(data)
             # Create raw_product class instance
             product = Raw_Product(data[0], data[1], data[2], data[3])
@@ -177,14 +187,18 @@ class Product(Resource):
         conn = sqlite3.connect('database.db')
         cur = conn.cursor()
         if int(product_id):
-            cur.execute('select * from products where P_id = {}'.format(int(product_id)))
+            cur.execute(
+                'select * from products where P_id = {}'.format(int(product_id)))
             data = cur.fetchall()
-            if len(data)>0:
-                cur.execute('delete from products where P_id = {}'.format(int(product_id)))
+            if len(data) > 0:
+                cur.execute(
+                    'delete from products where P_id = {}'.format(int(product_id)))
                 conn.commit()
-                output = {"Done":"Product with id {} successfully deleted.".format(int(product_id))}
+                output = {"Done": "Product with id {} successfully deleted.".format(
+                    int(product_id))}
             else:
-                output = {"Error":"No product with id {} available.".format(int(product_id))}
+                output = {"Error": "No product with id {} available.".format(
+                    int(product_id))}
         return set_response_headers(jsonify(output), 'application/ld+json', 301)
 
 api.add_resource(
@@ -221,9 +235,7 @@ api.add_resource(
     ProductContext, "/api/contexts/Product.jsonld", endpoint="product_context")
 
 
-
-
 if __name__ == "__main__":
-    app.run(host = '0.0.0.0', debug=True, port=80)
+    app.run(host='0.0.0.0', debug=True, port=80)
 
-#volume test 1
+# volume test 1

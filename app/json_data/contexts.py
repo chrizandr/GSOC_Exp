@@ -1,4 +1,4 @@
-## Contains all contexts related to the coffeeshop-api
+# Contains all contexts related to the coffeeshop-api
 
 entrypoint_context = {
     "@context": {
