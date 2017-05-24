@@ -14,7 +14,7 @@ import models
 app = Flask(__name__)
 api = Api(app)
 
-db_credentials = "dbname='hydra' user='hydrus' host='localhost' password='hydra'"
+db_credentials = "dbname='hydra' user='postgres' host='localhost' password='hydra'"
 keymap = {
     "COM": "Spacecraft_Communication",
     "PROP": "Spacecraft_Propulsion",
@@ -73,7 +73,8 @@ def hydrafy_subsystems(subsystem_list):
         members.append(gen_subsystem_json(sub_id, subsystem))
     subsystem_collection_template["members"] = members
 
-    subsystem_collection_template["@context"] = subsystem_collection_context["@context"]
+    subsystem_collection_template[
+        "@context"] = subsystem_collection_context["@context"]
 
     return subsystem_collection_template
 
@@ -115,10 +116,13 @@ class Subsystems(Resource):
         # pdb.set_trace()
         objects = list()
         for relation in relations:
-            query = "SELECT * FROM SubSystem INNER JOIN {} ON SubSystem.ID={}.ID".format(relation, relation)
+            query = "SELECT * FROM SubSystem INNER JOIN {} ON SubSystem.ID={}.ID".format(
+                relation, relation)
             cur.execute(query)
             rows = cur.fetchall()
-            objects = objects + [(data[0], eval("models." + keymap[relation])(data[1], *data[4:])) for data in rows]
+            objects = objects + \
+                [(data[0], eval("models." + keymap[relation])(data[1], *data[4:]))
+                 for data in rows]
         conn.close()
 
         return set_response_headers(jsonify(hydrafy_subsystems(objects)), 'application/ld+json', 200)
@@ -138,7 +142,8 @@ class Subsystem(Resource):
         if int(sub_id):
             cur.execute('SELECT * FROM SubSystem WHERE ID = %s', (sub_id,))
             sub_id, name, relation = cur.fetchone()
-            query = "SELECT * FROM SubSystem INNER JOIN {} ON SubSystem.ID={}.ID WHERE SubSystem.ID = {}".format(relation, relation, sub_id)
+            query = "SELECT * FROM SubSystem INNER JOIN {} ON SubSystem.ID={}.ID WHERE SubSystem.ID = {}".format(
+                relation, relation, sub_id)
             cur.execute(query)
             data = cur.fetchone()
             if not data:
@@ -164,9 +169,11 @@ class Subsystem(Resource):
                 cur.execute(query)
                 cur.execute('DELETE FROM SubSystem WHERE ID = %s', (sub_id,))
                 conn.commit()
-                output = {"Done": "Product with id {} successfully deleted.".format(int(sub_id))}
+                output = {
+                    "Done": "Product with id {} successfully deleted.".format(int(sub_id))}
             else:
-                output = {"Error": "No product with id {} available.".format(int(sub_id))}
+                output = {
+                    "Error": "No product with id {} available.".format(int(sub_id))}
         return set_response_headers(jsonify(output), 'application/ld+json', 301)
 
 

@@ -183,7 +183,7 @@ def gen_all_types():
 
 def insert_data(entries):
     """Enter specified number of objects in the DB."""
-    db_credentials = "dbname='hydra' user='hydrus' host='localhost' password='hydra'"
+    db_credentials = "dbname='hydra' user='postgres' host='localhost' password='hydra'"
     conn = psql.connect(db_credentials)
     cur = conn.cursor()
     for i in range(entries):
