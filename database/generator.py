@@ -1,6 +1,7 @@
 """Generate random objects for SubSystem classes."""
 
 import random
+
 import psycopg2 as psql
 
 subsystems = dict({
@@ -117,10 +118,12 @@ def generateObject(name, subsystem):
                 result['cost'] = result['power'] * 16
                 return result
         else:    # rule for other not generator
-            result['volume'] = result['mass'] + randomValue({'min': -5, 'max': 5})
+            result['volume'] = result['mass'] + \
+                randomValue({'min': -5, 'max': 5})
             if name not in ['structure', 'attitude and orbit control']:
                 if name == 'detector':
-                    result['type'] = random.choice(['interferometer', 'spectrometer', 'photometer', 'optical', 'dust detector'])
+                    result['type'] = random.choice(
+                        ['interferometer', 'spectrometer', 'photometer', 'optical', 'dust detector'])
 
                 result['cost'] = randomValue(subsystem['cost'])
                 return result
@@ -133,10 +136,12 @@ def generateObject(name, subsystem):
                     if result['power'] > 0:
                         result['power'] = 0
                         result['type'] = 'passive'
-                        result['mechanism'] = random.choice(subsystem['passive'])
+                        result['mechanism'] = random.choice(
+                            subsystem['passive'])
                     else:
                         result['type'] = 'active'
-                        result['mechanism'] = random.choice(subsystem['active'])
+                        result['mechanism'] = random.choice(
+                            subsystem['active'])
                     result['cost'] = randomValue(subsystem['cost'])
                     return result
 
@@ -148,7 +153,8 @@ def generateObject(name, subsystem):
         result['minTemperature'] = randomValue(subsystem['minTemperature'])
         result['maxTemperature'] = randomValue(subsystem['maxTemperature'])
 
-        result['cost'] = (result['maxTemperature'] - result['minTemperature']) * 20
+        result['cost'] = (result['maxTemperature'] -
+                          result['minTemperature']) * 20
 
         if result['power'] == 0:
             result['type'] = 'passive'
@@ -164,7 +170,8 @@ def gen_all_types():
     i = 0
     for k, v in subsystems.items():
         # print(k)
-        name = str(random.randrange(0, 50)) + str(random.choice(['T', 'W', 'KV', 'JFG'])) + ' ' + k
+        name = str(random.randrange(0, 50)) + \
+            str(random.choice(['T', 'W', 'KV', 'JFG'])) + ' ' + k
         obj = {}
         obj['name'] = name
         obj['id'] = i + 1
@@ -185,28 +192,34 @@ def insert_data(entries):
             name = subsystem["name"]
             obj = subsystem["object"]
             relation = subsystems[obj["category"]]["slug"]
-            cur.execute('INSERT INTO SubSystem (name, category) VALUES(%s, %s) RETURNING ID', (name, relation))
+            cur.execute(
+                'INSERT INTO SubSystem (name, category) VALUES(%s, %s) RETURNING ID', (name, relation))
             sub_id = cur.fetchone()[0]
             command = ""
             if relation in ['COM', "PROP", "PPW", "BCK", "STR", "CDH"]:
                 command = "INSERT INTO {} VALUES ({}, {}, {}, {}, {}, {}, {})".format(
                     relation, sub_id, obj["power"], obj["mass"],
-                    obj["cost"], obj["volume"], obj["minWorkingTemp"], obj["maxWorkingTemp"]
+                    obj["cost"], obj["volume"], obj[
+                        "minWorkingTemp"], obj["maxWorkingTemp"]
                 )
             elif relation == "THR":
                 command = "INSERT INTO {} VALUES ({}, {}, {}, {}, {}, '{}', {}, {})".format(
                     relation, sub_id, obj["power"], obj["mass"], obj["cost"],
-                    obj["volume"], str(obj["type"]), obj["minTemperature"], obj["maxTemperature"]
+                    obj["volume"], str(obj["type"]), obj[
+                        "minTemperature"], obj["maxTemperature"]
                 )
             elif relation == "DTR":
                 command = "INSERT INTO {} VALUES ({}, {}, {}, {}, {}, '{}', {}, {})".format(
                     relation, sub_id, obj["power"], obj["mass"], obj["cost"],
-                    obj["volume"], str(obj["type"]), obj["minWorkingTemp"], obj["maxWorkingTemp"]
+                    obj["volume"], str(obj["type"]), obj[
+                        "minWorkingTemp"], obj["maxWorkingTemp"]
                 )
             elif relation == "AODCS":
                 command = "INSERT INTO {} VALUES ({}, {}, {}, {}, {}, '{}', '{}', {}, {})".format(
-                    relation, sub_id, obj["power"], obj["mass"], obj["cost"], obj["volume"],
-                    obj["type"], str(obj["mechanism"]), obj["minWorkingTemp"], obj["maxWorkingTemp"]
+                    relation, sub_id, obj["power"], obj[
+                        "mass"], obj["cost"], obj["volume"],
+                    obj["type"], str(obj["mechanism"]), obj[
+                        "minWorkingTemp"], obj["maxWorkingTemp"]
                 )
             cur.execute(command)
             conn.commit()

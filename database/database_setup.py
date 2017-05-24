@@ -8,11 +8,26 @@ Password : hydra
 Host : localhost
 """
 import psycopg2 as psql
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+
+
+def setup_initial_db():
+    # Connect with default postgres credentials
+    db_credentials = "dbname='postgres' user='postgres' host='localhost' password=''"
+    con = psql.connect(db_credentials)
+    con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+    # Create hydra database
+    dbname = 'hydra'
+    cur = con.cursor()
+    cur.execute('CREATE DATABASE ' + dbname)
+    cur.close()
+    con.close()
 
 
 def create_relations():
     """Create Relations in the DB according to Hydra Classes."""
-    db_credentials = "dbname='hydra' user='hydrus' host='localhost' password='hydra'"
+    db_credentials = "dbname='hydra' user='postgres' host='localhost' password='hydra'"
     # Starting a connection to postgres DB and getting a cursor
     conn = psql.connect(db_credentials)
     cur = conn.cursor()
@@ -157,5 +172,6 @@ def delete_all():
 
 
 if __name__ == "__main__":
+    setup_initial_db()
     create_relations()
     # delete_all()

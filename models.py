@@ -1,8 +1,7 @@
 """Models for Hydra Classes."""
-from flask_restful import Resource
 
 
-class SubSystem(Resource):
+class SubSystem(object):
     """Class definition for general SubSystem."""
 
     def __init__(self, category, name):
