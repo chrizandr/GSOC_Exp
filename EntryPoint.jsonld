@@ -1,0 +1,33 @@
+{
+    "hydra": "http://www.w3.org/ns/hydra/core#",
+    "vocab": "https://localhost:8000/vocab#",
+    "EntryPoint": "vocab:EntryPoint",
+    "Satellite_Device":{
+        "@id": "vocab:EntryPoint/Satellite_Device",
+        "@type": "@id"
+    },
+    "GroundToOrbitVehicle":{
+        "@id": "vocab:EntryPoint/GroundToOrbitVehicle",
+        "@type": "@id"
+    },
+    "InformationGatheringDevice":{
+        "@id": "vocab:EntryPoint/InformationGatheringDevice",
+        "@type": "@id"
+    },
+    "AstronomicalSatellite":{
+        "@id": "vocab:EntryPoint/AstronomicalSatellite",
+        "@type": "@id"
+    },
+    "WeatherSatellite":{
+        "@id": "vocab:EntryPoint/WeatherSatellite",
+        "@type": "@id"
+    },
+    "EarthRemoteSensingSatellite":{
+        "@id": "vocab:EntryPoint/EarthRemoteSensingSatellite",
+        "@type": "@id"
+    },
+    "SpaceProbe":{
+        "@id": "vocab:EntryPoint/SpaceProbe",
+        "@type": "@id"
+    }
+}
